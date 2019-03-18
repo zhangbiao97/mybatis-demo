@@ -4,7 +4,11 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="config"/>
 	<classpathentry kind="lib" path="lib/log4j-1.2.17.jar"/>
-	<classpathentry kind="lib" path="lib/mybatis-3.4.1.jar"/>
+	<classpathentry kind="lib" path="lib/mybatis-3.4.1.jar" sourcepath="D:/桌面/Mybatis/mybatis-3-mybatis-3.4.1.zip">
+		<attributes>
+			<attribute name="source_encoding" value="UTF-8"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="lib" path="lib/mysql-connector-java-5.1.37-bin.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
 	<classpathentry kind="output" path="bin"/>

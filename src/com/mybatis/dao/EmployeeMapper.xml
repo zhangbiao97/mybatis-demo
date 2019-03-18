@@ -11,8 +11,8 @@
 	#{id}：从传递过来的参数中取出id值
  -->
 
-	<select id="getEmpById" resultType="com.mybatis.entity.Employee">
-		select id,last_name lastName,gender,email from employee where id = #{id}
+	<select id="getEmpById" resultType="emp" databaseId="mysql">
+		select * from employee where id = #{id}
 	</select>
 	
 </mapper>

@@ -10,6 +10,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.junit.jupiter.api.Test;
 
+import com.mybatis.dao.EmployeeAnnotationMapper;
 import com.mybatis.dao.EmployeeMapper;
 import com.mybatis.entity.Employee;
 
@@ -82,6 +83,19 @@ class MybatisTest {
 			Employee employee = employeeMapper.getEmpById(1);
 			System.out.println(employee);
 		} finally {
+			openSession.close();
+		}
+	}
+	
+	@Test
+	public void test03() throws IOException {
+		SqlSessionFactory sqlSessionFactory = getSqlSessionFactory();
+		SqlSession openSession = sqlSessionFactory.openSession();
+		try {
+			EmployeeAnnotationMapper mapper = openSession.getMapper(EmployeeAnnotationMapper.class);
+			Employee empById = mapper.getEmpById(1);
+			System.out.println(empById);
+		}finally {
 			openSession.close();
 		}
 	}
