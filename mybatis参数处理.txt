@@ -1,0 +1,20 @@
+单个参数：mybatis不会做特殊处理
+	#{参数名/任意名}：取出参数值；
+	
+多个参数：mybatis会做特殊处理，多个参数会被封装成一个map，
+	key：param1...paramN，value：传入的参数值，#{}就是从map中获取指定key的值；
+
+	出现的异常：
+		Caused by: 
+		org.apache.ibatis.binding.BindingException: 
+		Parameter 'id' not found. Available parameters are [0, 1, param1, param2]
+	操作：
+		方法：Employee getEmpByIdAndlastName(Integer id,String lastName);
+		取值：#{id}，#{lastName}
+		
+	解决方式：
+		1、使用#{param1...param2}，一个参数对应一个key（#{param1...paramN}）
+		2、使用@Param注解：
+			由于多个参数会被封装成一个map，key使用@Param注解指定的值，value参数值
+			#{指定的Key}取出对应的参数值
+		

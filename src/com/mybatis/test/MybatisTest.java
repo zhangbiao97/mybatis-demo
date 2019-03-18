@@ -100,4 +100,62 @@ class MybatisTest {
 		}
 	}
 	
+	/**
+	 * 
+	  *  测试增删改查
+	 * 1、mybatis允许增删改直接定义以下类型返回值
+	 * 		Integer、Long、Boolean、void
+	 * 2、需要我们手动提交数据
+	 * 		sqlSession.openSession(); -> 手动提交
+	 * 		sqlSession.openSession(true); -> 自动提交
+	 * 
+	 * @throws IOException
+	 */
+	@Test
+	public void test04() throws IOException {
+		SqlSessionFactory sqlSessionFactory = getSqlSessionFactory();
+		//1、获取无参构造的SqlSession是不会自动提交的，需要手动提交
+		SqlSession openSession = sqlSessionFactory.openSession();
+		try {
+			EmployeeMapper employeeMapper = openSession.getMapper(EmployeeMapper.class);
+
+			//测试增加
+			Employee employee = new Employee(null, "lisi", 1, "lisi@qq.com");
+			int insertEmp = employeeMapper.insertEmp(employee);
+			System.out.println(insertEmp);
+			System.out.println(employee);
+			
+			//测试删除
+			/*boolean deleteEmpById = employeeMapper.deleteEmpById(1);
+			System.out.println(deleteEmpById);*/
+			
+			//测试修改
+			//employeeMapper.updateEmpById(new Employee(2, "zhangsan", 1, "zhangsan@qq.com"));
+			
+			
+			
+			//2、手动提交
+			openSession.commit();
+		}finally {
+			openSession.close();
+		}
+	}
+	
+	@Test
+	public void test05() throws IOException {
+		//获取sqlSessionFactory对象
+		SqlSessionFactory sqlSessionFactory = getSqlSessionFactory();
+		//获取sqlSession对象
+		SqlSession openSession = sqlSessionFactory.openSession();
+		try {
+			//获取借口的实现类对象
+			//会为借口自动的创建一个代理对象，代理对象去执行增删改查的方法
+			EmployeeMapper employeeMapper = openSession.getMapper(EmployeeMapper.class);
+			Employee employee = employeeMapper.getEmpByIdAndlastName(2, "zhangsan");
+			System.out.println(employee);
+		} finally {
+			openSession.close();
+		}
+	}
+	
 }
