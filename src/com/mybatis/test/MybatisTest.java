@@ -6,6 +6,10 @@ import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.javassist.bytecode.stackmap.TypeData.ClassName;
@@ -16,6 +20,7 @@ import org.junit.jupiter.api.Test;
 
 import com.mybatis.dao.EmployeeAnnotationMapper;
 import com.mybatis.dao.EmployeeMapper;
+import com.mybatis.dao.EmployeeMapperPlus;
 import com.mybatis.entity.Employee;
 
 /**
@@ -162,20 +167,59 @@ class MybatisTest {
 		}
 	}
 	
+	/**
+	 * ≤‚ ‘∑µªÿList
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 */
 	@Test
-	public void test06() throws ClassNotFoundException {
-		Class clazz = Class.forName("com.mybatis.dao.EmployeeMapper");
-		Method[] declaredMethods = clazz.getDeclaredMethods();
-		Arrays.asList(declaredMethods)
-			.forEach(System.out::println);
-		Annotation[][] parameterAnnotations = declaredMethods[1].getParameterAnnotations();
-		for(int i=0;i<parameterAnnotations.length;i++) {
-			for(int j=0;j<parameterAnnotations[i].length;j++) {
-				System.out.println(parameterAnnotations[i][j]);
-			}
+	public void test06() throws ClassNotFoundException, IOException {
+		SqlSessionFactory sqlSessionFactory = getSqlSessionFactory();
+		SqlSession openSession = sqlSessionFactory.openSession();
+		try {
+			EmployeeMapper employeeMapper = openSession.getMapper(EmployeeMapper.class);
+			List<Employee> listEmps = employeeMapper.listEmps();
+			listEmps.forEach(System.out::println);
+		}finally {
+			openSession.close();
 		}
-		System.out.println(parameterAnnotations.length);
-		
+	}
+	
+	/**
+	 * ≤‚ ‘∑µªÿmap
+	 * @throws IOException
+	 */
+	@Test
+	public void test07() throws IOException {
+		SqlSessionFactory sqlSessionFactory = getSqlSessionFactory();
+		SqlSession openSession = sqlSessionFactory.openSession();
+		try {
+			EmployeeMapper employeeMapper = openSession.getMapper(EmployeeMapper.class);
+			//Map<String, Object> empByIdReturnMap = employeeMapper.getEmpByIdReturnMap(2);
+			Map<Integer, Employee> listEmpsReturnMap = employeeMapper.listEmpsReturnMap();
+			for(Entry<Integer, Employee> item:listEmpsReturnMap.entrySet()) {
+				System.out.println("key:"+item.getKey()+",value:"+item.getValue());
+			}
+		}finally {
+			openSession.close();
+		}
+	}
+	
+	/**
+	 * ≤‚ ‘∑µªÿmap
+	 * @throws IOException
+	 */
+	@Test
+	public void test08() throws IOException {
+		SqlSessionFactory sqlSessionFactory = getSqlSessionFactory();
+		SqlSession openSession = sqlSessionFactory.openSession();
+		try {
+			EmployeeMapperPlus employeeMapperPlus = openSession.getMapper(EmployeeMapperPlus.class);
+			Employee employee = employeeMapperPlus.getEmpById(2);
+			System.out.println(employee);
+		}finally {
+			openSession.close();
+		}
 	}
 	
 }
