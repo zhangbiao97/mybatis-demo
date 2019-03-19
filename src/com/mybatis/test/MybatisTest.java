@@ -18,9 +18,11 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.junit.jupiter.api.Test;
 
+import com.mybatis.dao.DepartmentMapper;
 import com.mybatis.dao.EmployeeAnnotationMapper;
 import com.mybatis.dao.EmployeeMapper;
 import com.mybatis.dao.EmployeeMapperPlus;
+import com.mybatis.entity.Department;
 import com.mybatis.entity.Employee;
 
 /**
@@ -206,7 +208,7 @@ class MybatisTest {
 	}
 	
 	/**
-	 * ≤‚ ‘∑µªÿmap
+	 * ≤‚ ‘∑µªÿresultMap
 	 * @throws IOException
 	 */
 	@Test
@@ -217,6 +219,44 @@ class MybatisTest {
 			EmployeeMapperPlus employeeMapperPlus = openSession.getMapper(EmployeeMapperPlus.class);
 			Employee employee = employeeMapperPlus.getEmpById(2);
 			System.out.println(employee);
+		}finally {
+			openSession.close();
+		}
+	}
+	
+	/**
+	 * ≤‚ ‘association
+	 * @throws IOException
+	 */
+	@Test
+	public void test09() throws IOException {
+		SqlSessionFactory sqlSessionFactory = getSqlSessionFactory();
+		SqlSession openSession = sqlSessionFactory.openSession();
+		try {
+			EmployeeMapperPlus employeeMapperPlus = openSession.getMapper(EmployeeMapperPlus.class);
+			Employee employee = employeeMapperPlus.getEmpByIdStep(3);
+			System.out.println(employee.getLastName());
+			System.out.println(employee.getDept());
+		}finally {
+			openSession.close();
+		}
+	}
+	
+	/**
+	 * ≤‚ ‘collection
+	 * @throws IOException
+	 */
+	@Test
+	public void test10() throws IOException {
+		SqlSessionFactory sqlSessionFactory = getSqlSessionFactory();
+		SqlSession openSession = sqlSessionFactory.openSession();
+		try {
+			DepartmentMapper departmentMapper = openSession.getMapper(DepartmentMapper.class);
+			//Department department = departmentMapper.getDeptById(1);
+			Department department = departmentMapper.getDeptByIdStep(1);
+			System.out.println(department.getDeptName());
+			department.getEmps()
+				.forEach(System.out::println);
 		}finally {
 			openSession.close();
 		}
