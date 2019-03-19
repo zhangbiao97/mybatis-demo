@@ -11,16 +11,32 @@
 	#{id}：从传递过来的参数中取出id值
  -->
 
+	<!-- 	Employee getEmpById(Integer id); -->
 	<select id="getEmpById" resultType="emp" databaseId="mysql">
 		select * from employee where id = #{id}
 	</select>
 	
+	<!-- 	Employee getEmpByIdAndlastName(@Param("id") Integer id,@Param("lastName") String lastName); -->
 	<select id="getEmpByIdAndlastName" resultType="emp" databaseId="mysql">
 		select * from employee
 		where id = #{id} and last_name = #{lastName}
 	</select>
+	
+	<!-- 	List<Employee> listEmps(); -->
+	<select id="listEmps" resultType="com.mybatis.entity.Employee">
+		select * from employee
+	</select>
 
-	  
+	<!-- Map<String,Object> getEmpByIdReturnMap(); -->
+	<select id="getEmpByIdReturnMap" resultType="map">
+		select * from employee where id = #{id}
+	</select>
+	
+	<!-- Map<Integer,Employee> listEmpsReturnMap(); -->
+	<select id="listEmpsReturnMap" resultType="com.mybatis.entity.Employee">
+		select * from employee
+	</select>  
+	
 	 <!-- int insertEmp(Employee employee); -->
 	 <!-- 
 	 	parameterType：参数类型，可以省略  

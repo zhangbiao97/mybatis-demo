@@ -3,8 +3,12 @@ package com.mybatis.test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.util.Arrays;
 
 import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.javassist.bytecode.stackmap.TypeData.ClassName;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
@@ -156,6 +160,22 @@ class MybatisTest {
 		} finally {
 			openSession.close();
 		}
+	}
+	
+	@Test
+	public void test06() throws ClassNotFoundException {
+		Class clazz = Class.forName("com.mybatis.dao.EmployeeMapper");
+		Method[] declaredMethods = clazz.getDeclaredMethods();
+		Arrays.asList(declaredMethods)
+			.forEach(System.out::println);
+		Annotation[][] parameterAnnotations = declaredMethods[1].getParameterAnnotations();
+		for(int i=0;i<parameterAnnotations.length;i++) {
+			for(int j=0;j<parameterAnnotations[i].length;j++) {
+				System.out.println(parameterAnnotations[i][j]);
+			}
+		}
+		System.out.println(parameterAnnotations.length);
+		
 	}
 	
 }

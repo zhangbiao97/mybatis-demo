@@ -17,4 +17,23 @@
 		2、使用@Param注解：
 			由于多个参数会被封装成一个map，key使用@Param注解指定的值，value参数值
 			#{指定的Key}取出对应的参数值
-		
+
+参数值的获取：
+	1、#{}：可以获取map中的值或者POJO对象属性的值；
+	2、${}：可以获取map中的值获取POJO对象属性的值；
+	3、区别：
+		#{}：是以预编译的形式将参数设置到sql语句中；PreparedStatement，防止sql注入攻击；
+		${}：取出的值直接拼装在sql语句中，会有安全问题；
+
+#{}更丰富的用法：
+	1、规定参数的一些规则：
+		javaType、 jdbcType、 mode（存储过程）、 numericScale、
+		resultMap、 typeHandler、 jdbcTypeName、 expression（未来准备支持的功能）；
+	2、jdbcType通常需要在某种特定的条件下被设置
+		1)、在我们数据为null的时候，有些数据库可能不能识别mybatis对null的默认处理，比如Oracle（报错）；
+			异常：JdbcType OTHER：无效的类型，因为mybatis对所有的null都映射的是原生jdbc的OTHER类型，Oracle不支持；
+			
+			解决方式：
+				1)、#{email，jdbcType=NULL}
+				2)、全局配置文件中：
+					<setting name="jdbcTypeForNull" value="NULL"/>
