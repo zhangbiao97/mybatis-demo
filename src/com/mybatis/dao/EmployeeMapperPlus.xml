@@ -9,7 +9,7 @@
 			type：自定义类型
 			id：唯一的标识，方便引用
 	 -->
-	<resultMap type="com.mybatis.entity.Employee" id="EmployeeResultMap">
+	<resultMap type="com.mybatis.entity.Employee" id="EmployeeSimpleResultMap">
 		<!-- 
 			指定主键列的封装规则
 			column：指定哪一列
@@ -22,13 +22,74 @@
 		<result column="gender" property="gender"/>
 	</resultMap>
 
+	<!-- 联合查询 -->
+	<resultMap type="com.mybatis.entity.Employee" id="EmployeeComplexResultMap">
+		<id column="id" property="id"/>
+		<result column="last_name" property="lastName"/>
+		<result column="gender" property="gender"/>
+		<result column="email" property="email"/>
+		<result column="dept_id" property="dept.id"/>
+		<result column="dept_name" property="dept.deptName"/>
+	</resultMap>
+	
+	<!-- 使用assocaiation定义关联的单个对象的封装规则 -->
+	<resultMap type="com.mybatis.entity.Employee" id="EmployeeComplexResultMap2">
+		<id column="id" property="id"/>
+		<result column="last_name" property="lastName"/>
+		<result column="gender" property="gender"/>
+		<result column="email" property="email"/>
+		<!-- 
+			association可以指定联合的javaBean对象
+			property：指定哪个属性是联合对象
+			javaType：指定这个属性的对象类型，不能省略
+		 -->
+		<association property="dept" javaType="com.mybatis.entity.Department">
+			<id column="dept_id" property="id"/>
+			<result column="dept_name" property="deptName"/>
+		</association>
+	</resultMap>
+
 	<!-- 
 		注意：resultType和resultMap只能选择其一
 	 -->
 	<!-- Employee getEmpById(Integer id); -->
-	<select id="getEmpById" resultMap="EmployeeResultMap">
-		select * from employee
-		where id = #{id}
+	<select id="getEmpById" resultMap="EmployeeComplexResultMap2">
+		select emp.id,emp.last_name,emp.gender,emp.email,dept.id dept_id,dept.dept_name
+		from employee emp,department dept
+		where emp.id = dept.id and emp.id = 2
 	</select>
 	
+	<!-- 
+		使用association进行分步查询
+			1、先按照员工id查询员工信息；
+			2、根据查询员工信息中的dept_id去部门表查询部门信息
+			3、部门信息设置到员工中
+	 -->
+	<resultMap type="com.mybatis.entity.Employee" id="EmployeeComplexStepResultMap">
+		<id column="id" property="id"/>
+		<result column="last_name" property="lastName"/>
+		<result column="gender" property="gender"/>
+		<result column="email" property="email"/>
+		<!-- 
+			association定义关联对象的封装规则
+				select：表明当前属性是调用select指定的方法查出的结果
+				column：指定将哪一列的值传给这个方法
+				
+				流程：
+					使用select指定的方法（传入column指定的值）查询对象，并封装给property指定的属性
+		 -->
+		<association property="dept" javaType="com.mybatis.entity.Department"
+			select="com.mybatis.dao.DepartmentMapper.getDeptById"
+			column="dept_id">
+		</association>
+	</resultMap>
+	<!-- Employee getEmpByIdStep(Integer id); -->
+	<select id="getEmpByIdStep" resultMap="EmployeeComplexStepResultMap">
+		select * from employee where id = #{id}
+	</select>
+	
+	<!-- List<Employee> listEmpsByDeptId(Integer deptId); -->
+	<select id="listEmpsByDeptId" resultType="com.mybatis.entity.Employee">
+		select id,last_name lastName,gender,email from employee where dept_id = #{dept_id}
+	</select>
 </mapper>

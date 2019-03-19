@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mybatis.dao.DepartmentMapper">
+	
+	<!-- Department getDeptById(Integer id); -->
+	<select id="getDeptById" resultType="com.mybatis.entity.Department">
+		select id,dept_name deptName from department where id = #{id}
+	</select>
+	
+	<!-- 嵌套结果集的方式，使用collection标签定义关联的集合类型的属性封装规则 -->
+	<resultMap type="com.mybatis.entity.Department" id="DepartmentResultMap">
+		<id column="dept_id" property="id"/>
+		<result column="dept_name" property="deptName"/>
+		<!-- 
+			collection：定义关联集合类型的属性的封装规则
+				ofType：指定集合元素的类型
+		 -->
+		<collection property="emps" ofType="com.mybatis.entity.Employee">
+			<id column="emp_id" property="id"/>
+			<result column="last_name" property="lastName"/>
+			<result column="gender" property="gender"/>
+			<result column="email" property="email"/>
+		</collection>
+	</resultMap>
+	
+	<!-- Department getDeptByIdPlus(Integer id); -->
+	<select id="getDeptByIdPlus" resultMap="DepartmentResultMap">
+		select dept.id dept_id,dept.dept_name,emp.id emp_id,emp.last_name
+		,emp.gender,emp.email
+		from department dept
+		left join employee emp
+		on dept.id=emp.dept_id
+		where dept.id=#{id}
+	</select>
+	
+	<!-- collection分步查询 -->
+	<resultMap type="com.mybatis.entity.Department" id="DepartmentStepResultMap">
+		<id column="id" property="id"/>
+		<result column="dept_name" property="deptName"/>
+		<collection property="emps" ofType="com.mybatis.entity.Employee" select="com.mybatis.dao.EmployeeMapperPlus.listEmpsByDeptId"
+			column="id">
+			<id column="id" property="id"/>
+			<result column="last_name" property="lastName"/>
+			<result column="gender" property="gender"/>
+			<result column="email" property="email"/>
+		</collection>
+	</resultMap>
+	
+	<!-- Department getDeptByIdStep(Integer id); -->
+	<select id="getDeptByIdStep" resultMap="DepartmentStepResultMap">
+		select * from department where id = #{dept_id}
+	</select>
+	
+</mapper>
