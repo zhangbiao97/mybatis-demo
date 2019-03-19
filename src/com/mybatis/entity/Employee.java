@@ -9,6 +9,7 @@ public class Employee {
 	private String lastName;
 	private Integer gender;
 	private String email;
+	private Department dept;
 
 	public Employee() {
 		super();
@@ -21,6 +22,14 @@ public class Employee {
 		this.lastName = lastName;
 		this.gender = gender;
 		this.email = email;
+	}
+
+	public Department getDept() {
+		return dept;
+	}
+
+	public void setDept(Department dept) {
+		this.dept = dept;
 	}
 
 	public Integer getId() {
@@ -57,7 +66,8 @@ public class Employee {
 
 	@Override
 	public String toString() {
-		return "Employee [id=" + id + ", lastName=" + lastName + ", gender=" + gender + ", email=" + email + "]";
+		return "Employee [id=" + id + ", lastName=" + lastName + ", gender=" + gender + ", email=" + email + ", dept="
+				+ dept + "]";
 	}
 
 }
