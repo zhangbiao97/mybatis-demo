@@ -35,6 +35,18 @@
 		where dept.id=#{id}
 	</select>
 	
+	<!-- 
+		分布查询扩展： 
+			1、如何传递多列的值？
+				解决方式：
+					1、将多列的值封装成map传递过去；
+					2、如何封装成map？
+						column属性 = "{key1=column1,key2=column2}"；
+			fetchType标签：
+				lazy：延迟加载，默认值；
+				eager：立即加载；
+					
+	-->
 	<!-- collection分步查询 -->
 	<resultMap type="com.mybatis.entity.Department" id="DepartmentStepResultMap">
 		<id column="id" property="id"/>
