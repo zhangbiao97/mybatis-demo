@@ -19,7 +19,7 @@
 	 -->
 	<settings>
 		<!-- 开启驼峰命名规范和数据库字段名对应 -->
-		<!-- <setting name="mapUnderscoreToCamelCase" value="true"/> -->
+		<setting name="mapUnderscoreToCamelCase" value="true"/>
 		
 		<!-- 开启懒加载 -->
 		<setting name="lazyLoadingEnabled" value="true"/>
