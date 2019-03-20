@@ -1,0 +1,36 @@
+resultMap：自定义javaBean的封装规则；
+	1、resultMap属性：		
+		type：自定义类型
+		id：唯一的标识，方便引用
+	2、resultMap中的标签：
+		id：指定主键列的封装规则；
+			属性：
+				column：指定哪一列；
+				property：指定对应的javaBean属性；
+		result：定义普通列的封装规则，不指定的列会自动封装；
+			属性：
+				column：指定哪一列；
+				property：指定对应的javaBean属性；
+	3、assocaiation：可以指定联合的javaBean对象；
+		属性：
+			property：指定哪个属性是联合对象；
+			javaType：指定这个属性的对象类型，不能省略；
+			select：表明当前属性是调用select指定的方法查出的结果；
+			column：指定将哪一列的值传给这个方法；
+	4、collection：定义关联集合类型的属性的封装规则；
+		属性：
+			ofType：指定集合元素的类型；
+注意：
+	assocaiation、collection进行分步查询的使用细节：
+		1、流程：
+			使用select指定的方法（传入column指定的值）查询对象，并封装给property指定的属性
+		2、如何传递多列的值？
+			解决方式：
+				①、将多列的值封装成map传递过去；
+				②、如何封装成map？
+					column属性 = "{key1=column1,key2=column2}"；
+		3、fetchType属性：
+			lazy：延迟加载，默认值；
+			eager：立即加载；
+		
+		

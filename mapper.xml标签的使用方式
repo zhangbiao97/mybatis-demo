@@ -1,0 +1,61 @@
+注意：
+	namespace：名称空间，指定为借口的全类名
+	id：唯一标识
+	resultType：返回值类型
+	#{id}：从传递过来的参数中取出id值
+	
+<insert></insert>：添加；
+	属性：
+		parameterType：参数类型，可以省略  
+	 获取自增主键的值：
+	 	①、mysql支持自增主键，自增主键值得获取，mybatis也是利用statement.getGenreatedKeys();
+	 	②、useGeneratedKeys="true"：使用自增主键获取值策略
+	 	③、keyProperty：指定对应的主键属性，也就是mybatis获取到主键后，将这个值封装给javaBean的哪个属性
+
+<select></select>：查询；
+	注意事项：
+		resultType和resultMap只能选择其一；
+		
+<if></if>：判断；
+	1、test：判断表达式（OGNL），参考官方文档，从参数中取值进行判断，遇见特殊符号符号进行转义；
+	
+<where></where>：封装查询条件；
+	出现的问题：
+		1、查询的时候如果某些条件没带可能sql拼接会有问题；
+			解决方式：
+				①、给where后面加上1=1，以后的条件都加上and xxx=xxx；
+				②、使用where标签将所有的查询条件包括在内，mybatis就会将where标签在内的查询条件
+					多出来的and获取or去掉；（where只会去掉第一个多出的and或者or）
+<trim></trim>：自定义字符串的截取规则，trim标签在内的查询条件是整个字符串拼接后的结果；
+	属性：
+		prefix：前缀，prefix给拼接后的整个字符串加一个前缀；
+		prefixOverrides：前缀覆盖，去掉整个字符串前面的字符；
+		suffix：后缀，suffix给拼接后的整个字符串加一个后缀；
+		suffixOverrides：后缀覆盖，去掉整个字符串后面的字；
+		
+<choose></choose>：分支选择，带了break的swtich-case，只有进入一个case；
+
+<set></set>：封装修改条件；
+
+<foreach></foreach>：
+	属性：
+		collection：指定要遍历的集合，list类型的参数会做特殊处理封装在map中，map中的key叫list；
+			将当前遍历的元素赋值给指定变量；
+		separator：每个元素之间的分隔符；
+		open：遍历出所有结果拼接一个开始的字符；
+		close：遍历出所有结果拼接一个结束的字符；
+		index：索引，遍历list时index就是每个元素的索引，item就是当前值，
+			遍历map时index就是map中的key，item就是map中的值；
+			
+<bind></bind>：可以将OGNL表达式的值绑定到一个变量中，方便后面来引用这个值；
+
+<sql></sql>：抽取可重用的sql语句，方便后面引用；
+	引用方式：
+		使用include标签来引用抽取的sql语句；
+	
+mybatis提供的内置参数：
+	1、_parameter：代表整个参数；
+		单个参数：_parameter就是这个参数本身；
+		多个参数：参数会被封装成一个map，_parameter代表这个map；
+	2、_databaseId：如果配置了databaseIdProvider标签，_databaseId就是代表当前数据库的别名；
+	
