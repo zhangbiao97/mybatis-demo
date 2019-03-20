@@ -13,6 +13,11 @@ public class Department {
 		// TODO Auto-generated constructor stub
 	}
 
+	public Department(Integer id) {
+		super();
+		this.id = id;
+	}
+
 	public Department(Integer id, String deptName) {
 		super();
 		this.id = id;
