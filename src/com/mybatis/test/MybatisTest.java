@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Test;
 
 import com.mybatis.dao.DepartmentMapper;
 import com.mybatis.dao.EmployeeAnnotationMapper;
+import com.mybatis.dao.EmployeeDynamicSQLMapper;
 import com.mybatis.dao.EmployeeMapper;
 import com.mybatis.dao.EmployeeMapperPlus;
 import com.mybatis.entity.Department;
@@ -259,6 +260,75 @@ class MybatisTest {
 			System.out.println(department.getDeptName());
 			department.getEmps()
 				.forEach(System.out::println);
+		}finally {
+			openSession.close();
+		}
+	}
+	
+	/**
+	 * 测试动态SQL查询
+	 * @throws IOException
+	 */
+	@Test
+	public void test11() throws IOException {
+		SqlSessionFactory sqlSessionFactory = getSqlSessionFactory();
+		SqlSession openSession = sqlSessionFactory.openSession();
+		try {
+			EmployeeDynamicSQLMapper employeeDynamicSQLMapper = openSession.getMapper(EmployeeDynamicSQLMapper.class);
+			Employee employee = new Employee(2,"admin",null,"admin@qq.com");
+			//测试if标签
+			/*employeeDynamicSQLMapper.listEmpsByConditionIf(employee)
+				.forEach(System.out::println);*/
+			//测试trim标签
+			/*employeeDynamicSQLMapper.listEmpsByConditionTrim(employee)
+				.forEach(System.out::println);*/
+			//测试choose标签
+			/*employeeDynamicSQLMapper.listEmpsByConditionChoose(employee)
+				.forEach(System.out::println);*/
+			//测试set标签
+			/*employeeDynamicSQLMapper.updateEmp(employee);
+			openSession.commit();*/
+			//测试foreach标签
+			employeeDynamicSQLMapper.listEmpsByConditionForeach(Arrays.asList(1,2,3,4))
+				.forEach(System.out::println);
+			
+		}finally {
+			openSession.close();
+		}
+	}
+	
+	/**
+	 * 测试批量添加
+	 * @throws IOException
+	 */
+	@Test
+	public void test12() throws IOException {
+		SqlSessionFactory sqlSessionFactory = getSqlSessionFactory();
+		SqlSession openSession = sqlSessionFactory.openSession();
+		try {
+			EmployeeDynamicSQLMapper employeeDynamicSQLMapper = openSession.getMapper(EmployeeDynamicSQLMapper.class);
+			employeeDynamicSQLMapper.insertEmps(Arrays.asList(
+					new Employee("tom2",1,"tom@qq.com",new Department(1))
+					,new Employee("niusan2",0,"niusan@qq.com",new Department(2))));
+			openSession.commit();
+			
+		}finally {
+			openSession.close();
+		}
+	}
+	
+	/**
+	 * 测试mybatis提供的内置参数
+	 * @throws IOException
+	 */
+	@Test
+	public void test13() throws IOException {
+		SqlSessionFactory sqlSessionFactory = getSqlSessionFactory();
+		SqlSession openSession = sqlSessionFactory.openSession();
+		try {
+			EmployeeDynamicSQLMapper employeeDynamicSQLMapper = openSession.getMapper(EmployeeDynamicSQLMapper.class);
+			employeeDynamicSQLMapper.listEmpsByConditionInnerParameter(null)
+				.forEach(System.out::println);;
 		}finally {
 			openSession.close();
 		}

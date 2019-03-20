@@ -24,6 +24,9 @@
 		<!-- 开启懒加载 -->
 		<setting name="lazyLoadingEnabled" value="true"/>
 		<setting name="aggressiveLazyLoading" value="false"/>
+		
+		<!-- 开启二级缓存 -->
+		<setting name="cacheEnabled" value="true"/>
 	</settings>
 	
 	<!-- 

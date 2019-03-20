@@ -1,9 +1,11 @@
 package com.mybatis.entity;
 
+import java.io.Serializable;
+
 import org.apache.ibatis.type.Alias;
 
 @Alias("emp")
-public class Employee {
+public class Employee implements Serializable {
 
 	private Integer id;
 	private String lastName;
