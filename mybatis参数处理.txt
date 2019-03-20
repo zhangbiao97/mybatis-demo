@@ -38,6 +38,4 @@
 				2)、全局配置文件中：
 					<setting name="jdbcTypeForNull" value="NULL"/>
 					
-					
-					
-					
+		
