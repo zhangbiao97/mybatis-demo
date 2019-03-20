@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mybatis.dao.EmployeeDynamicSQLMapper">
+
+	<!-- 
+		1、if：判断
+			1)、test：判断表达式（OGNL），参考官方文档，从参数中取值进行判断，遇见特殊符号符号进行转义；
+		2、where：封装查询条件；
+		出现的问题：
+			1、查询的时候如果某些条件没带可能sql拼接会有问题；
+				解决方式：
+					1)、给where后面加上1=1，以后的条件都加上and xxx=xxx；
+					2)、使用where标签将所有的查询条件包括在内，mybatis就会将where标签在内的查询条件
+						多出来的and获取or去掉；（where只会去掉第一个多出的and或者or）
+		3、trim：自定义字符串的截取规则，trim标签在内的查询条件是整个字符串拼接后的结果；
+			prefix：前缀，prefix给拼接后的整个字符串加一个前缀
+			prefixOverrides：前缀覆盖，去掉整个字符串前面的字符
+			suffix：后缀，suffix给拼接后的整个字符串加一个后缀
+			suffixOverrides：后缀覆盖，去掉整个字符串后面的字符
+		4、choose：分支选择，带了break的swtich-case，只有进入一个case；
+		5、set：封装修改条件；
+		6、foreach：
+			1)、collection：指定要遍历的集合，list类型的参数会做特殊处理封装在map中，map中的key叫list；
+			2)、将当前遍历的元素赋值给指定变量；
+			3)、separator：每个元素之间的分隔符；
+			4)、open：遍历出所有结果拼接一个开始的字符；
+			5)、close：遍历出所有结果拼接一个结束的字符；
+			6)、index：索引，遍历list时index就是每个元素的索引，item就是当前值，
+					遍历map时index就是map中的key，item就是map中的值
+		7、mybatis提供的内置参数：
+			1)、_parameter：代表整个参数；
+				单个参数：_parameter就是这个参数本身；
+				多个参数：参数会被封装成一个map，_parameter代表这个map；
+			2)、_databaseId：如果配置了databaseIdProvider标签，_databaseId就是代表当前数据库的别名；
+		8、bind：可以将OGNL表达式的值绑定到一个变量中，方便后面来引用这个值；
+		9、sql：抽取可重用的sql语句，方便后面引用；
+			1)、引用方式：
+				使用include标签来引用抽取的sql语句；
+	 -->
+	
+	<!-- 
+		查询员工，携带哪个字段查询条件就带上这个字段的值
+	 -->
+	<!-- 使用if标签 -->
+	<!-- List<Employee> listEmpsByConditionIf(Employee employee); -->
+	<select id="listEmpsByConditionIf" resultType="com.mybatis.entity.Employee">
+		select * from employee
+		<where>
+			<if test="id != null">
+				id = #{id}
+			</if>
+			<if test="lastName != null and lastName != &quot;&quot;">
+				and last_name = #{lastName}
+			</if>
+			<if test="gender == 0 or gender == 1">
+				and gender = #{gender}
+			</if>
+		</where>
+	</select>
+	
+	<!-- 是用trim标签 -->
+	<!-- List<Employee> listEmpsByConditionTrim(Employee employee); -->
+	<select id="listEmpsByConditionTrim" resultType="com.mybatis.entity.Employee">
+		select * from employee
+		<trim prefix="where" suffixOverrides="and">
+			<if test="id != null">
+				id = #{id} and 
+			</if>
+			<if test="lastName != null and lastName != &quot;&quot;">
+				last_name = #{lastName} and
+			</if>
+			<if test="gender == 0 or gender == 1">
+				gender = #{gender}
+			</if>
+		</trim>
+	</select>
+	
+	<!-- 使用choose标签 -->
+	<!-- List<Employee> listEmpsByConditionChoose(Employee employee); -->
+	<select id="listEmpsByConditionChoose" resultType="com.mybatis.entity.Employee">
+		select * from employee
+		<where>
+			<choose>
+				<when test="id != null">
+					id = #{id}
+				</when>
+				<when test="lastName != null">
+					last_name = #{lastName}
+				</when>
+				<when test="email != null">
+					email = #{email}
+				</when>
+				<otherwise>
+					gender = 1
+				</otherwise>
+			</choose>
+		</where>
+	</select>
+	
+	<!-- 使用set标签 -->
+	<!-- void updateEmp(Employee employee); -->
+	<update id="updateEmp">
+		update employee
+		<set>
+			<if test="lastName != null">
+				last_name = #{lastName},
+			</if>
+			<if test="email != null">
+				email = #{email},
+			</if>
+			<if test="gender == 0 or gender == 1">
+				gender = #{gender}
+			</if>
+		</set>
+		<where>
+			id = #{id}
+		</where>
+	</update>
+	
+	<!-- List<Employee> listEmpsByConditionForeach(@Param("ids") List<Integer> ids); -->
+	<select id="listEmpsByConditionForeach" resultType="com.mybatis.entity.Employee">
+		select * from employee
+		where id in
+			<foreach collection="ids" item="emp_id"
+				separator="," open="(" close=")">
+				#{emp_id}	
+			</foreach>
+	</select>
+	
+	<!-- 批量添加，推荐使用第一种方式，使用foreach标签 -->
+	<!-- void insertEmps(@Param("emps") List<Employee> emps); -->
+	<!-- 批量添加方式1： -->
+	<insert id="insertEmps">
+		insert into employee(last_name,gender,email,dept_id)
+		values
+		<foreach collection="emps" item="emps" separator=",">
+			(#{emps.lastName},#{emps.gender},#{emps.email},#{emps.dept.id})
+		</foreach>
+	</insert>
+	<!-- 批量添加方式2： 需要在连接mysql url后添加参数：allowMultiQueries=true -->
+	<!-- <insert id="insertEmps">
+		<foreach collection="emps" item="emps" separator=";">
+			insert into employee(last_name,gender,email,dept_id)
+			values(#{emps.lastName},#{emps.gender},#{emps.email},#{emps.dept.id})
+		</foreach>
+	</insert> -->
+	
+	<!-- 使用mybatis提供的内置参数 -->
+	<!-- List<Employee> listEmpsByConditionInnerParameter(Employee employee); -->
+	<select id="listEmpsByConditionInnerParameter" resultType="com.mybatis.entity.Employee">
+		<if test="_databaseId == 'mysql'">
+			select * from employee
+				<where>
+					<if test="_parameter != null">
+						last_name = #{lastName}
+					</if>
+				</where>
+		</if>
+	</select>
+</mapper>
