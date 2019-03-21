@@ -33,3 +33,19 @@ mybatis缓存：
 				1)、不同的namespace查出来的数据会放在自己对应的缓存中；
 				2)、查询出来的数据默认先放在一级缓存中，当会话提交或者关闭后
 					一级缓存中的数据才会保存到二级缓存中；
+					
+和缓存有关的设置/属性：
+	1、cacheEnabled：
+		true：开启二级缓存；
+		false：关闭二级缓存，一级缓存依然可以使用；
+	2、select标签中useCache：
+		true：使用二级缓存；
+		false：不能使用二级缓存；
+	3、insert、delete、update标签中的flushCache：
+		true：一级、二级缓存都会被清空，增删改执行完成后就会清空缓存；
+	4、select中的flushCache：默认为false；
+		true：每次查询之后都会清空缓存；
+	5、sqlSession.clearCache();：只是清除当前session的一级缓存；
+	6、localCacheScope：本地缓存作用域（一级缓存），
+		session：当前会话的所有数据都被会保存到一级缓存中；
+		STATEMENT：可以禁用一级缓存；

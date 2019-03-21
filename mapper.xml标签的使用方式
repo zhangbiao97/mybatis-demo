@@ -60,4 +60,3 @@ mybatis提供的内置参数：
 	2、_databaseId：如果配置了databaseIdProvider标签，_databaseId就是代表当前数据库的别名；
 
 
-	

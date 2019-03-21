@@ -44,7 +44,7 @@ import com.mybatis.entity.Employee;
  * @author Administrator
  *
  */
-class MybatisTest {
+public class MybatisTest {
 	
 	public SqlSessionFactory getSqlSessionFactory() throws IOException {
 		String resource = "mybatis-config.xml";

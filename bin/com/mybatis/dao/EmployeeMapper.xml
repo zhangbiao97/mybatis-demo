@@ -14,7 +14,7 @@
  -->
 
 	<!-- 	Employee getEmpById(Integer id); -->
-	<select id="getEmpById" resultType="emp" databaseId="mysql">
+	<select id="getEmpById" resultType="emp" databaseId="mysql" useCache="true">
 		select * from employee where id = #{id}
 	</select>
 	
