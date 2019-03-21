@@ -58,4 +58,3 @@ mybatis提供的内置参数：
 		单个参数：_parameter就是这个参数本身；
 		多个参数：参数会被封装成一个map，_parameter代表这个map；
 	2、_databaseId：如果配置了databaseIdProvider标签，_databaseId就是代表当前数据库的别名；
-		
